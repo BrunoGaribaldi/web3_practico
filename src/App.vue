@@ -1,11 +1,20 @@
 <template>
   <v-app>
     <v-app-bar flat density="comfortable">
-      <v-app-bar-title class="font-weight-bold">Tienda</v-app-bar-title>
-      <v-spacer />
+     <template v-if="!isLogged">
       <v-btn variant="text" :to="{ name: 'home' }">Inicio</v-btn>
       <v-btn variant="text" :to="{ name: 'productos' }">Productos</v-btn>
       <v-btn variant="text" :to="{ name: 'registro' }">Registro</v-btn>
+      <v-btn variant="text" :to="{ name: 'login' }">Login</v-btn>
+    </template>
+
+    <template v-else>
+      <v-chip variant="flat">{{ auth.state.user.email }}</v-chip>
+      <v-btn variant="text" :to="{ name: 'home' }">Inicio</v-btn>
+      <v-btn variant="text" :to="{ name: 'productos' }">Productos</v-btn>
+      <v-btn variant="text" :to="{ name: 'carrito' }">Carrito</v-btn>
+      <v-btn variant="text" @click="logout">Salir</v-btn>
+    </template>
     </v-app-bar>
 
     <v-main>
@@ -31,6 +40,16 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { auth } from '@/auth/session'
+import { useRouter } from 'vue-router' 
+
+const router = useRouter()
+const isLogged = computed(() => !!auth.state.user)
+
+function logout() {
+  auth.logout()
+  router.push({ name: 'login' })
+}
 
 const productos = ref([
   { id: 1, nombre: 'Arroz',   precio: 10, stock: 10, descripcion: 'Arroz premium' },
