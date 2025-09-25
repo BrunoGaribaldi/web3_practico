@@ -28,11 +28,18 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  id: { type: String, required: true },           // viene de la URL por props: true
+  id: { type: String, required: true },           // viene de la URL por props: true. El id del producto no pertenece a App.vue, 
+                                                  // sino a DetalleProducto.vue, que lo recibe directamente del router.
+                                                  //App vue tiene los props globales, que le pasa a todas las paginas.
+                                                  //aca el id viene en la url gracias a { path: '/productos/:id', component: DetalleProducto, props: true }
   productos: { type: Array, required: true },     // viene desde App.vue
 })
 defineEmits(['add-to-cart'])
 
+//Esa línea crea una propiedad computada que busca dentro del array de productos
+//  el producto que tiene el mismo id que viene de la URL.
+//String(p.id) === String(props.id) Compara el id del producto (p.id) con el id de la URL (props.id)
+//despues para el detalle uso obviamente producto xdxdxd no productos.
 const producto = computed(() =>
   props.productos.find(p => String(p.id) === String(props.id))
 )

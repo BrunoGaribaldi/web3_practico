@@ -71,9 +71,12 @@
                 v-for="p in productos"
                 :key="p.id"
             >
-                <template #prepend>
-                <v-avatar size="28" color="grey-lighten-3" />
-                </template>
+                <!--cubito que aparece a la izq.-->
+              <template #prepend>
+                <v-avatar size="36" color="grey-lighten-3">
+                  <v-icon>mdi-cube-outline</v-icon>
+                </v-avatar>
+              </template>
 
                 <v-list-item-title class="font-weight-medium">
                 {{ p.nombre }} — ${{ p.precio }}
@@ -91,7 +94,8 @@
 
                 <template #append>
                 <div class="d-flex align-center ga-2">
-                    <!-- 🔗 Link explícito a detalle -->
+                    <!--link a detalle de producto. se reemplaza id por el id del producto-->
+                    <!--osea vos estarias yendo a /products/4 por ejemplo-->
                     <RouterLink
                     :to="{ name: 'producto', params: { id: p.id } }"
                     class="text-primary text-decoration-underline"
@@ -121,9 +125,11 @@
             class="text-subtitle-1 font-weight-bold d-flex align-center justify-space-between"
           >
             Carrito
+            <!--este es el chip chiquitito de arriba a la derecha que dice vacio-->
             <template v-if="carrito.length === 0">
               <v-chip size="small" color="grey" variant="flat">Vacío</v-chip>
             </template>
+
             <template v-else>
               <span>Total: ${{ totalCarrito }}</span>
             </template>
@@ -146,7 +152,7 @@
                     size="x-small"
                     variant="text"
                     @click="$emit('dec-qty', item.id)"
-                    :aria-label="`Quitar una unidad de ${item.nombre}`"
+                    
                   >
                     <v-icon>mdi-minus</v-icon>
                   </v-btn>
@@ -155,7 +161,7 @@
                     size="x-small"
                     variant="text"
                     @click="$emit('inc-qty', item.id)"
-                    :aria-label="`Agregar una unidad de ${item.nombre}`"
+                    
                   >
                     <v-icon>mdi-plus</v-icon>
                   </v-btn>
@@ -165,7 +171,7 @@
                     variant="text"
                     color="error"
                     @click="$emit('remove-from-cart', item.id)"
-                    :aria-label="`Eliminar ${item.nombre} del carrito`"
+                    
                   >
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
@@ -200,7 +206,7 @@ const props = defineProps({
 })
 defineEmits(['add-to-cart', 'dec-qty', 'inc-qty', 'remove-from-cart', 'clear-cart'])
 
-/** Estado local SOLO para buscador/alertas */
+// Estado local SOLO para buscador/alertas
 const producto = ref('')
 const productoEncontrado = ref(null)
 const productoNoEncontrado = ref(false)
@@ -213,6 +219,7 @@ function buscarProducto () {
   stockCero.value = false
   if (!n) return
 
+  //buscamos en el props (app.vue) si existe el producto.
   const encontrado = props.productos.find(
     p => p.nombre.toLowerCase() === n.toLowerCase()
   )
@@ -224,7 +231,9 @@ function buscarProducto () {
   stockCero.value = availableStock(encontrado) === 0
 }
 
-/** Stock disponible = stock catálogo − cantidad en carrito */
+//verificamos el stock disponible, para ello buscamos en props y restamos lo que haya en el carrito.
+//esto es para mostrar el stock real, no el del array original.
+//si no hay nada en el carrito, usamos el stock original.
 function availableStock(p) {
   const item = props.carrito.find(i => i.id === p.id)
   return p.stock - (item?.cantidad ?? 0)

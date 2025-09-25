@@ -2,7 +2,10 @@
   <v-container class="d-flex align-center justify-center" style="min-height: calc(100vh - 64px);">
     <v-card rounded="xl" elevation="3" max-width="400" class="w-100 pa-6">
       <h1 class="text-h5 font-weight-bold mb-4">Login</h1>
-
+      <!--aca isValid es true si todas las reglas de validacion de los campos se cumplen-->
+      <!--@submit.prevent="onSubmit"
+      @submit → escucha el evento submit del formulario (cuando se hace clic en un botón type="submit" o se presiona Enter)
+      llama funcion onSubmit-->
       <v-form v-model="isValid" @submit.prevent="onSubmit">
         <v-text-field
           v-model="email"
@@ -22,6 +25,7 @@
           density="comfortable"
         />
 
+        <!--se renderiza si auth.state.error tiene un valor como credenciales invalidas.-->
         <v-alert
           v-if="auth.state.error"
           type="error"
@@ -35,8 +39,7 @@
         <v-btn
           block
           type="submit"
-          :disabled="!isValid || auth.state.loading"
-          :loading="auth.state.loading"
+          :disabled="!isValid"
         >
           Ingresar
         </v-btn>
@@ -68,9 +71,7 @@ const rules = {
 
 async function onSubmit() {
   try {
-    await auth.login({ email: email.value, password: password.value })
-    const redirect = route.query.redirect || '/'
-    router.replace(redirect)
+    auth.login({ email: email.value, password: password.value }) //llama funcion de auth/session.js
   } catch (err) {
     // el error ya se guarda en auth.state.error
   }

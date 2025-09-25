@@ -3,10 +3,13 @@ import { reactive, computed } from 'vue'
 
 const state = reactive({
   user: null,      // { email }
-  loading: false,
   error: null,
 })
 
+//restaurar sesion desde el local storage.
+// si en local storage hay una clave session, entonces la parseamos y la asignamos a state.user
+// si no hay nada, state.user queda en null
+// si hay un error al parsear, state.user queda en null 
 function load() {
   try {
     const raw = localStorage.getItem('session')
@@ -16,12 +19,8 @@ function load() {
   }
 }
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)) }
-
 async function login({ email, password }) {
-  state.loading = true
   state.error = null
-  await sleep(700)
 
   // Credenciales de prueba
   const VALID_EMAIL = 'test@demo.com'
@@ -32,11 +31,8 @@ async function login({ email, password }) {
     localStorage.setItem('session', JSON.stringify(state.user))
   } else {
     state.error = 'Credenciales inválidas'
-    state.loading = false
     throw new Error('INVALID_CREDENTIALS')
   }
-
-  state.loading = false
 }
 
 function logout() {
@@ -45,6 +41,7 @@ function logout() {
   localStorage.removeItem('session')
 }
 
+//valor reactivo que tira true si state.user no es null (esta logueado un usuario)
 const isAuthenticated = computed(() => !!state.user)
 
 export const auth = { state, isAuthenticated, load, login, logout }

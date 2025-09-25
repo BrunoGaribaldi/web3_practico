@@ -50,8 +50,7 @@ const rules = {
 }
 
 function onSubmit() {
-  // En un sistema real harías una llamada a tu backend
-  // Aquí solo redirigimos a login para que pruebes
+  //tiro una alerta nomas y redirijo al login
   alert(`Registrado: ${email.value}`)
   router.push({ name: 'login' })
 }

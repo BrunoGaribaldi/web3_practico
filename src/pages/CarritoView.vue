@@ -25,6 +25,7 @@
               v-for="item in carrito"
               :key="item.id"
             >
+              <!--cubito que aparece a la izq.-->
               <template #prepend>
                 <v-avatar size="36" color="grey-lighten-3">
                   <v-icon>mdi-cube-outline</v-icon>
@@ -40,6 +41,7 @@
 
               <template #append>
                 <div class="d-flex align-center ga-2">
+                  <!--aumento la cantidad con el emit al app (props)-->
                   <v-btn icon size="x-small" variant="text" @click="$emit('dec-qty', item.id)">
                     <v-icon>mdi-minus</v-icon>
                   </v-btn>
@@ -47,6 +49,7 @@
                   <v-btn icon size="x-small" variant="text" @click="$emit('inc-qty', item.id)">
                     <v-icon>mdi-plus</v-icon>
                   </v-btn>
+                  <!--tachito de basura-->
                   <v-btn icon size="x-small" variant="text" color="error" @click="$emit('remove-from-cart', item.id)">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
@@ -62,6 +65,7 @@
         <v-card rounded="xl" elevation="2" class="pa-4">
           <div class="d-flex justify-space-between mb-2">
             <span class="text-medium-emphasis">Total ítems</span>
+            <!--lo traigo de un computed() de aca abajo-->
             <strong>{{ totalItems }}</strong>
           </div>
           <div class="d-flex justify-space-between text-h6 font-weight-bold mb-4">
@@ -84,7 +88,9 @@
 <script setup>
 import { computed } from 'vue'
 
+//como nuestro carrito obviamente recibe props y eventos desde el app.vue, necesitamos declarar esto.
 const props = defineProps({
+  //required hace referencia a que si el padre (app.vue) no le pasa el prop, tira error.
   carrito: { type: Array, required: true },
   totalCarrito: { type: Number, required: true }
 })

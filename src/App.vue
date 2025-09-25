@@ -48,7 +48,8 @@ const isLogged = computed(() => !!auth.state.user)
 
 function logout() {
   auth.logout()
-  router.push({ name: 'login' })
+  router.push({ name: 'login' }) // redirigir al login después de cerrar sesión. 
+  //eso es equivalente a <router-link :to="{ name: 'login' }">
 }
 
 const productos = ref([
@@ -58,12 +59,15 @@ const productos = ref([
   { id: 4, nombre: 'Tomate',  precio: 15, stock: 0,  descripcion: 'Sin stock por ahora' },
 ])
 
+//la estructura va a ser esta: id, nombre, precio, cantidad 
 const carrito = ref([])
 
+//Se recalcula cada vez que cambia carrito.
 const totalCarrito = computed(() =>
   carrito.value.reduce((acc, i) => acc + i.cantidad * i.precio, 0)
 )
 
+//agregar producto a carrito
 function agregarPorId(id){
   const p = productos.value.find(x => x.id === id)
   if (!p || p.stock <= 0) return
@@ -75,11 +79,13 @@ function agregarPorId(id){
   carrito.value.push({ id: p.id, nombre: p.nombre, precio: p.precio, cantidad: 1 }) 
 }
 
+//eliminar producto del carrito
 function eliminarPorId(id){
   const idx = carrito.value.findIndex(i => i.id === id)
   if (idx !== -1) carrito.value.splice(idx, 1)
 }
 
+//aumentar cantidad de un producto en el carrito en una unidad.
 function incrementarCantidad(id) {
   const item = carrito.value.find(i => i.id === id)
   const prod = productos.value.find(p => p.id === id)
@@ -94,6 +100,7 @@ function decrementarCantidad(id) {
   else carrito.value.splice(idx, 1)
 }
 
+//vaciar carrito por completo
 function clearCart() {
   carrito.value = []
 }
